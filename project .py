@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify,request
 import sqlite3
 import psutil
 from datetime import datetime
@@ -26,11 +26,11 @@ def record_ram_stats():
     
 @app.route("/last_ram_stats", methods = ["GET"])
 def get_last_ram_stats():
-    num_records = int(request.args.get ("num_records", defualt = 10))
+    num_records = int(request.args.get("num_records", 10))
     
     conn = sqlite3.connect(db_name)
     c= conn.cursor()
-    c.execute("SELECT * FROM ram_stats ORDER BY timestamps DESC LIMIT ?", (num_records,))
+    c.execute("SELECT * FROM ram_stats ORDER BY timestamp DESC LIMIT ?", (num_records,))
     records = c.fetchall()
     conn.close()
     
