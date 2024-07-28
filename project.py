@@ -13,6 +13,7 @@ class ramStatsRecorder:
         self.conn = sqlite3.connect(db_name)
         self.c = self.conn.cursor()
         self.create_table()
+        self.record_ram_stats()
     
         
     def create_table(self):
@@ -23,19 +24,19 @@ class ramStatsRecorder:
         
 
 
-def record_ram_stats(self):
-    total_ram = psutil.virtual_memory().total / (1024*1024)
-    free_ram = psutil.virtual_memory().free /(1024*1024)
-    used_ram = psutil.virtual_memory().used / (1024*1024)
-    timestamp = datetime.now()
+    def record_ram_stats(self):
+        total_ram = psutil.virtual_memory().total / (1024*1024)
+        free_ram = psutil.virtual_memory().free / (1024*1024)
+        used_ram = psutil.virtual_memory().used / (1024*1024)
+        timestamp = datetime.now()
     
-    self.c.execute("INSERT INTO ram_stats(timestamp, total, free, used) VALUES (?,?,?,?)",
-    (timestamp, total_ram, free_ram, used_ram))
-    self.conn.commit()
+        self.c.execute("INSERT INTO ram_stats(timestamp, total, free, used) VALUES (?,?,?,?)",
+        (timestamp, total_ram, free_ram, used_ram))
+        self.conn.commit()
     
     
-    t = Timer(60.0, record_ram_stats)
-    t.start()
+        t = Timer(60.0, self.record_ram_stats)
+        t.start()
     
     
 class ramStatsAPI:
@@ -46,16 +47,17 @@ class ramStatsAPI:
     def get_last_ram_stats(self):
         num_records = int(request.args.get("num_records", 10))
         
-        self.c.execute("SELECT * FROM ram_stats ORDER BY timestamp DESC LIMIT ?", (num_records,))
+        self.c.execute("SELECT * FROM ram_stats ORDER BY timestamp DESC LIMIT ?", 
+                       (num_records,))
         records = self.c.fetchall()
         
         result = []
         for record in records:
             result.append({
-            "timestamp": record[1],
-            "total": record [2],
-            "free": record [3],
-            "used": record [4]
+               "timestamp": record[1],
+               "total": record [2],
+               "free": record [3],
+               "used": record [4]
             })
             
         return jsonify(result)
