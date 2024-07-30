@@ -21,12 +21,17 @@ def close_connection(exception):
         db.close()
 
 class RamStatsService:
-    def create_table(cur):
+    def create_table():
+        cur = sqlite3.connect(db_name).cursor()
         cur.execute('''CREATE TABLE IF NOT EXISTS ram_stats 
                         (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                         timestamp TIMESTAMP, total REAL, free REAL, used REAL)''')
+        
+        cur.connection.commit()
+        cur.close()
 
-    def record_ram_stats(cur):
+    def record_ram_stats():
+        cur = sqlite3.connect(db_name).cursor()
         total_ram = psutil.virtual_memory().total / (1024 * 1024)
         free_ram = psutil.virtual_memory().free / (1024 * 1024)
         used_ram = psutil.virtual_memory().used / (1024 * 1024)
@@ -34,10 +39,15 @@ class RamStatsService:
     
         cur.execute("INSERT INTO ram_stats(timestamp, total, free, used) VALUES (?,?,?,?)",
         (timestamp, total_ram, free_ram, used_ram))
+        cur.connection.commit()
+        cur.close()
+        print("stats saved")
+        t = Timer(60.0, lambda: RamStatsService.record_ram_stats(cur))
+        t.start()
 
     def get_last_ram_stats(cur, num_records):
         cur.execute("SELECT * FROM ram_stats ORDER BY timestamp DESC LIMIT ?", 
-                       (num_records,))
+                    (num_records,))
         records = cur.fetchall()
         
         result = []
@@ -51,6 +61,8 @@ class RamStatsService:
         
         return jsonify(result)
     
+    
+    
 @app.route("/last_ram_stats")
 def get_last_ram_stats():
     num_records = int(request.args.get("num_records", 10))
@@ -58,12 +70,6 @@ def get_last_ram_stats():
     return RamStatsService.get_last_ram_stats(cur, num_records)
     
 if __name__ == "__main__":
-    cur = get_db().cursor()
-
-    RamStatsService.create_table(cur)
-    RamStatsService.record_ram_stats(cur)
-
-    t = Timer(60.0, lambda: RamStatsService.record_ram_stats(cur))
-    t.start()
-    
-    app.run()
+    RamStatsService.create_table()
+    RamStatsService.record_ram_stats()
+    app.run("0.0.0.0", 3000)
