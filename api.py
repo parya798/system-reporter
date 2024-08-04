@@ -1,6 +1,7 @@
 from flask import Flask, request, g 
 from services import RamStatsService 
 from db_handler import Database_memory 
+import sqlite3
 
 app = Flask(__name__) 
 db_name = "ram_stats.db" 
