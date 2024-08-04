@@ -3,6 +3,7 @@ import psutil
 from datetime import datetime 
 from threading import Timer 
 from flask import jsonify 
+import sqlite3
 
 class RamStatsService: 
         @staticmethod 
