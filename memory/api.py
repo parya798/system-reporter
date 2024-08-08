@@ -1,5 +1,5 @@
 from flask import Flask, request, g 
-from services import RamStatsService 
+from memory.services import RamStatsService 
 import sqlite3
 
 app = Flask(__name__) 
