@@ -1,4 +1,4 @@
-from flask import Flask, g 
+from flask import Flask, g
 from memory.services import RamStatsService 
 import sqlite3
 
@@ -17,9 +17,14 @@ def close_connection(exception):
     if db is not None: 
         db.close() 
 
-DEFAULT_NUM_RECORDS = 5
+DEFAULT_NUM_RECORDS = 2
 
 @app.route("/last_ram_stats") 
 def get_last_ram_stats_api(): 
     cursor = get_db().cursor() 
     return RamStatsService.get_last_ram_stats(cursor, DEFAULT_NUM_RECORDS)
+
+@app.route("/biggest_app") 
+def get_biggest_app_api(): 
+    cursor = get_db().cursor() 
+    return RamStatsService.get_biggest_app()
