@@ -17,7 +17,7 @@ def close_connection(exception):
     if db is not None: 
         db.close() 
 
-DEFAULT_NUM_RECORDS = 2
+DEFAULT_NUM_RECORDS = 1
 
 @app.route("/last_ram_stats") 
 def get_last_ram_stats_api(): 

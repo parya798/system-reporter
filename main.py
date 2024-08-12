@@ -2,7 +2,7 @@ from memory.db_handler import Database_memory
 from memory.services import RamStatsService 
 from memory.api import db_name, app
 
-db = Database_memory()
+db = Database_memory(db_name)
 
 db.__init__(db_name)
 db.initialize_db()
