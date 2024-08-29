@@ -30,7 +30,7 @@ class LastRamStatsQueryParams(BaseModel):
 @validate()
 def get_last_ram_stat_api(query: LastRamStatsQueryParams):
     cursor = get_db().cursor()
-    return RamStatsService.get_last_ram_stats(cursor, query.num_records) 
+    return RamStatsService.get_last_ram_stats(cursor, query.num_records)    
 
 
 
