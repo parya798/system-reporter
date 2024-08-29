@@ -4,10 +4,10 @@ from memory.api import db_name, app
 
 db = Database_memory(db_name)
 
-db.__init__(db_name)
+    
 db.initialize_db()
 
 RamStatsService.record_ram_stats(db_name)
 
-
-app.run("0.0.0.0", 3000)
+if __name__ == '__main__':
+    app.run("0.0.0.0", 3000)

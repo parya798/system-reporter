@@ -1,5 +1,6 @@
 import sqlite3 
 
+#defines a class for database that handles the SQLite database operations
 class Database_memory: 
     def __init__(self, db_name): 
         self.connection = sqlite3.connect(db_name) 
