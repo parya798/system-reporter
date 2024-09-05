@@ -1,4 +1,4 @@
-from flask import Flask, g, request
+from flask import Flask, g
 from memory.services import RamStatsService 
 import sqlite3
 from pydantic import BaseModel, Field
